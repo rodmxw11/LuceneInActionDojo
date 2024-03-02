@@ -27,7 +27,7 @@ test {
     useJUnitPlatform()
 }
 
-task ch1indexer(type: JavaExec) {
+task indexer(type: JavaExec) {
     String index_folder = 'indexes/CH01-Index'
     delete index_folder
     mkdir index_folder
@@ -36,5 +36,14 @@ task ch1indexer(type: JavaExec) {
     args = [
             'C:/Projects/LuceneInActionDojo/indexes/CH01-Index', // indexDir
             'C:/Projects/BookLuceneInAction/lia2e/src/lia/meetlucene/data'  // dataDir
+    ]
+}
+
+task searcher(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'org.example.chapter01.Searcher'
+    args = [
+            'C:/Projects/LuceneInActionDojo/indexes/CH01-Index', // indexDir
+            'patent'  // query
     ]
 }
