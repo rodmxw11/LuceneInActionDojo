@@ -25,7 +25,7 @@ class Searcher {
         long start = System.currentTimeMillis()
         TopDocs hits = is.search(query, 10)
         long end = System.currentTimeMillis()
-        println "Found ${hits.totalHits} document(s) in ${end-start} milliseconds that matched query $q:"
+        println "Found ${hits.totalHits} document(s) in ${end-start} milliseconds that matched query >$q<:"
         for (ScoreDoc scoreDoc: hits.scoreDocs) {
             Document doc = is.doc(scoreDoc.doc)
             println "\t${doc.get('fullpath')}"
