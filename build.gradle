@@ -1,0 +1,40 @@
+plugins {
+    id 'groovy'
+    id 'application'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.apache.groovy:groovy:4.0.14'
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    implementation 'org.apache.lucene:lucene-core:3.6.2' // Use the latest version of Lucene
+    // https://mvnrepository.com/artifact/org.spockframework/spock-core
+    testImplementation 'org.spockframework:spock-core:2.4-M2-groovy-4.0'
+
+    // https://mvnrepository.com/artifact/org.apache.groovy/groovy-all
+    implementation 'org.apache.groovy:groovy-all:4.0.18'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+task ch1indexer(type: JavaExec) {
+    String index_folder = 'indexes/CH01-Index'
+    delete index_folder
+    mkdir index_folder
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'org.example.chapter01.Indexer'
+    args = [
+            'C:/Projects/LuceneInActionDojo/indexes/CH01-Index', // indexDir
+            'C:/Projects/BookLuceneInAction/lia2e/src/lia/meetlucene/data'  // dataDir
+    ]
+}
