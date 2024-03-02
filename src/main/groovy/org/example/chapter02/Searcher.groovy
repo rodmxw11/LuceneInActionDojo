@@ -1,4 +1,4 @@
-package org.example.chapter01
+package org.example.chapter02
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer
 import org.apache.lucene.document.Document
