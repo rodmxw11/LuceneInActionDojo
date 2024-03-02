@@ -76,4 +76,45 @@ class AddDocToIndex extends Specification {
         cleanup:
         reader.close()
     }
+
+    def "Test Delete before Optimize"() {
+        when:
+        IndexWriter writer = getWriter()
+
+        then:
+        writer.numDocs() == 2
+
+        when:
+        writer.deleteDocuments(new Term('id','1'))
+        writer.commit()
+
+        then:
+        writer.hasDeletions()
+        writer.maxDoc() == 2
+        writer.numDocs() == 1
+
+        cleanup:
+        writer.close()
+    }
+
+    def "Test Delete After Optimize"() {
+        when:
+        IndexWriter writer = getWriter()
+
+        then:
+        writer.numDocs() == 2
+
+        when:
+        writer.deleteDocuments(new Term('id','1'))
+        writer.optimize()
+        writer.commit()
+
+        then:
+        !writer.hasDeletions()
+        writer.maxDoc() == 1
+        writer.numDocs() == 1
+
+        cleanup:
+        writer.close()
+    }
 }
