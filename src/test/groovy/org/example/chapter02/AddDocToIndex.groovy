@@ -10,6 +10,7 @@ import org.apache.lucene.search.Query
 import org.apache.lucene.search.TermQuery
 import org.apache.lucene.store.Directory
 import org.apache.lucene.store.RAMDirectory
+import org.example.utils.TestUtil
 import spock.lang.Specification
 import org.apache.lucene.document.Field
 

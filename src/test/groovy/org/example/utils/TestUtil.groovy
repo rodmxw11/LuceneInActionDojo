@@ -1,4 +1,4 @@
-package org.example.chapter02
+package org.example.utils
 
 import org.apache.lucene.document.Field.Index
 import org.apache.lucene.search.IndexSearcher
@@ -11,6 +11,8 @@ import org.apache.lucene.store.FSDirectory
 import org.apache.lucene.store.Directory
 
 class TestUtil {
+    static String BOOK_INDEX_PATH = 'C:/Projects/BookLuceneInAction/lia2e/build/index'
+
     static boolean hitsIncludeTitle(IndexSearcher searcher, TopDocs hits, String title) {
         for (ScoreDoc match : hits.scoreDocs) {
             Document doc = searcher.doc(match.doc)
@@ -41,7 +43,7 @@ class TestUtil {
     }
 
     static Directory getBookIndexDirectory() {
-        FSDirectory.open(new File(System.getProperty('index.dir')))
+        FSDirectory.open(new File(BOOK_INDEX_PATH))
     }
 
     static void rmDir(File dir) {
