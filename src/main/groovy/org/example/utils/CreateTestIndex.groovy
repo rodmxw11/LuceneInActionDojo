@@ -59,9 +59,8 @@ class CreateTestIndex {
     }
 
     static NumericField makeIntField(Map<String,Boolean> options=[:], String name, String value) {
-        return makeIntField(name,Integer.parseInt(value),options)
+        return makeIntField(options,name,Integer.parseInt(value))
     }
-
 
     static Document getDocument(File file) {
         Map<String, String> props = new Properties().with {

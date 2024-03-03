@@ -1,5 +1,6 @@
 package org.example.utils
 
+import org.apache.lucene.document.NumericField
 import spock.lang.Specification
 import org.apache.lucene.document.Field
 import static org.apache.lucene.document.Field.Store.*
@@ -114,6 +115,153 @@ class TestCreateTestIndex extends Specification {
         field.indexed
         !field.tokenized  // analyze
         !field.omitNorms
+        !field.termVectorStored
+        !field.storeOffsetWithTermVector
+        !field.storePositionWithTermVector
+    }
+
+    def "Test makeField(store:true,analyze:true,term:true)"() {
+//        Field("title",                    // 3
+//                title,                      // 3
+//                Field.Store.YES,            // 3
+//                Field.Index.ANALYZED,       // 3
+//                Field.TermVector.WITH_POSITIONS_OFFSETS));
+        given:
+        String title = "Now is the time for all good men to come to the aid of their country"
+        Field field = makeField("title",title,store:true,analyze:true,term:true)
+
+        expect:
+        field!=null
+        field.name()=="title"
+        field.stringValue()==title
+        field.stored
+        field.indexed
+        field.tokenized  // analyze
+        !field.omitNorms
+        field.termVectorStored
+        field.storeOffsetWithTermVector
+        field.storePositionWithTermVector
+    }
+
+    def "Test makeField(store:true,analyze:true,term:true)"() {
+//        Field("title",                    // 3
+//                title,                      // 3
+//                Field.Store.YES,            // 3
+//                Field.Index.ANALYZED,       // 3
+//                Field.TermVector.WITH_POSITIONS_OFFSETS));
+        given:
+        String title = "Now is the time for all good men to come to the aid of their country"
+        Field field = makeField("title",title,store:true,analyze:true,term:true)
+
+        expect:
+        field!=null
+        field.name()=="title"
+        field.stringValue()==title
+        field.stored
+        field.indexed
+        field.tokenized  // analyze
+        !field.omitNorms
+        field.termVectorStored
+        field.storeOffsetWithTermVector
+        field.storePositionWithTermVector
+    }
+
+    def "Test makeField(analyze:true,term:true)"() {
+//        Field("contents", text,                             // 3 // 5
+//                Field.Store.NO, Field.Index.ANALYZED,         // 3 // 5
+//                Field.TermVector.WITH_POSITIONS_OFFSETS))
+        given:
+        String title = "Now is the time for all good men to come to the aid of their country"
+        Field field = makeField("contents",title,analyze:true,term:true)
+
+        expect:
+        field!=null
+        field.name()=="contents"
+        field.stringValue()==title
+        !field.stored
+        field.indexed
+        field.tokenized  // analyze
+        !field.omitNorms
+        field.termVectorStored
+        field.storeOffsetWithTermVector
+        field.storePositionWithTermVector
+    }
+
+    def "test makeIntField()"() {
+        given:
+        int testNum = 2_382_138
+        NumericField field = makeIntField("pubmonthAsDay",testNum)
+
+        expect:
+        field!=null
+        field.name()=="pubmonthAsDay"
+        field.dataType==NumericField.DataType.INT
+        field.numericValue==testNum
+        field.numericValue.class==Integer
+        !field.stored
+        field.indexed
+        field.tokenized  // analyze
+        field.omitNorms
+        !field.termVectorStored
+        !field.storeOffsetWithTermVector
+        !field.storePositionWithTermVector
+    }
+
+    def "test makeIntField(String)"() {
+        given:
+        int testNum = 2_382_138
+        NumericField field = makeIntField("pubmonthAsDay",testNum.toString())
+
+        expect:
+        field!=null
+        field.name()=="pubmonthAsDay"
+        field.dataType==NumericField.DataType.INT
+        field.numericValue==testNum
+        field.numericValue.class==Integer
+        !field.stored
+        field.indexed
+        field.tokenized  // analyze
+        field.omitNorms
+        !field.termVectorStored
+        !field.storeOffsetWithTermVector
+        !field.storePositionWithTermVector
+    }
+
+    def "test makeIntField(store:true)"() {
+        given:
+        int testNum = 2_382_138
+        NumericField field = makeIntField("pubmonth", testNum, store:true)
+
+        expect:
+        field!=null
+        field.name()=="pubmonth"
+        field.dataType==NumericField.DataType.INT
+        field.numericValue==testNum
+        field.numericValue.class==Integer
+        field.stored
+        field.indexed
+        field.tokenized  // analyze
+        field.omitNorms
+        !field.termVectorStored
+        !field.storeOffsetWithTermVector
+        !field.storePositionWithTermVector
+    }
+
+    def "test makeIntField(String,store:true)"() {
+        given:
+        int testNum = 2_382_138
+        NumericField field = makeIntField("pubmonth", testNum.toString(), store:true)
+
+        expect:
+        field!=null
+        field.name()=="pubmonth"
+        field.dataType==NumericField.DataType.INT
+        field.numericValue==testNum
+        field.numericValue.class==Integer
+        field.stored
+        field.indexed
+        field.tokenized  // analyze
+        field.omitNorms
         !field.termVectorStored
         !field.storeOffsetWithTermVector
         !field.storePositionWithTermVector
