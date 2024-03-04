@@ -10,12 +10,18 @@ repositories {
     mavenCentral()
 }
 
+ext {
+    luceneVersion = '3.6.2'
+}
+
 dependencies {
     implementation 'org.apache.groovy:groovy:4.0.14'
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'
 
-    implementation 'org.apache.lucene:lucene-core:3.6.2' // Use the latest version of Lucene
+    //implementation 'org.apache.lucene:lucene-analyzers:3.6.2'
+    implementation 'org.apache.lucene:lucene-core:3.6.2'
+
     // https://mvnrepository.com/artifact/org.spockframework/spock-core
     testImplementation 'org.spockframework:spock-core:2.4-M2-groovy-4.0'
 

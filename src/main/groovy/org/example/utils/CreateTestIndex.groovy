@@ -1,5 +1,6 @@
 package org.example.utils
 
+import groovy.io.FileType
 import org.apache.lucene.document.Document
 
 import org.apache.lucene.document.Field
@@ -122,4 +123,31 @@ class CreateTestIndex {
 
         return doc;
     }
+
+    static void main(String[] args) {
+        assert args.length==2, "Usage <dataDir> <indexDir>"
+        File dataDir = new File(args[0])
+        assert dataDir.exists() && dataDir.directory
+        File indexDir = new File(args[1])
+        Directory dir = FSDirectory.open(indexDir)
+        IndexWriter w = new IndexWriter(
+                dir,
+                new MyStandardAnalyzer(Version.LUCENE_30),
+                true,
+                IndexWriter.MaxFieldLength.UNLIMITED
+        )
+
+        try {
+            dataDir.eachFileRecurse(FileType.FILES) {
+                bookFile
+                    ->
+                    if (bookFile.name.endsWith('.properties')) {
+                        Document doc = getDocument(bookFile)
+                    }
+            } //endeach
+        } finally {
+            w?.close()
+            dir?.close
+        } //endfinally
+    } //endmain
 }
