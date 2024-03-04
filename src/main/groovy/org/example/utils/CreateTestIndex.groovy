@@ -34,6 +34,10 @@ class CreateTestIndex {
     }
 
     static class DocumentCategory {
+        static Document leftShift(Document self, Fieldable field) {
+            self.add(field)
+            return self
+        }
         static Document append(Document self, Fieldable field) {
             self.add(field)
             return self

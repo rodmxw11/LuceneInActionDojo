@@ -1,5 +1,6 @@
 package org.example.utils
 
+import org.apache.lucene.document.Document
 import org.apache.lucene.document.NumericField
 import spock.lang.Specification
 import org.apache.lucene.document.Field
@@ -265,5 +266,107 @@ class TestCreateTestIndex extends Specification {
         !field.termVectorStored
         !field.storeOffsetWithTermVector
         !field.storePositionWithTermVector
+    }
+
+    def "Test Document.add()"() {
+        given:
+        Document doc = new Document()
+        String isbn = "293298329832983298398"
+        Field field1 = makeField("isbn",isbn,store:true)
+
+        when:
+        doc.add(field1)
+
+        then:
+        doc.fields.size()==1
+        doc.getFieldable("isbn")===field1
+        doc.get("isbn")==isbn
+    }
+
+    def "Test DocumentCategory .append(field1)"() {
+        given:
+        Document doc = new Document()
+        String isbn = "293298329832983298398"
+        Field field1 = makeField("isbn",isbn,store:true)
+
+        when:
+        use (DocumentCategory) {
+            doc.append(field1)
+        }
+
+        then:
+        doc.fields.size()==1
+        doc.getFieldable("isbn")===field1
+        doc.get("isbn")==isbn
+    }
+
+    def "Test DocumentCategory << field1"() {
+        given:
+        Document doc = new Document()
+        String isbn = "293298329832983298398"
+        Field field1 = makeField("isbn",isbn,store:true)
+
+        when:
+        use (DocumentCategory) {
+            doc << field1
+        }
+
+        then:
+        doc.fields.size()==1
+        doc.getFieldable("isbn")===field1
+        doc.get("isbn")==isbn
+    }
+
+    def "Test DocumentCategory << field1 << field2"() {
+        given:
+        Document doc = new Document()
+        String isbn = "293298329832983298398"
+        Field field1 = makeField("isbn",isbn,store:true)
+        String title = "Now is the time for all good men to come to the aid of their country"
+        Field field2 = makeField("contents",title,analyze:true,term:true)
+
+        when:
+        use (DocumentCategory) {
+            doc << field1 << field2
+        }
+
+        then:
+        doc.fields.size()==2
+        doc.getFieldable("isbn")===field1
+        doc.get("isbn")==isbn
+        doc.getFieldable("contents")===field2
+        doc.get("contents")==title
+    }
+
+    def "Test DocumentCategory << field1 << field2 << field3"() {
+        given:
+        Document doc = new Document()
+        String isbn = "293298329832983298398"
+        Field field1 = makeField("isbn",isbn,store:true)
+        String title = "Now is the time for all good men to come to the aid of their country"
+        Field field2 = makeField("contents",title,analyze:true,term:true)
+        String topic = "Nuclear energy and radiation sickness"
+        Field field3 = makeField("contents",topic,analyze:true,term:true)
+
+        when:
+        use (DocumentCategory) {
+            doc
+                    << field1
+                    << field2
+                    << field3
+        }
+
+        then:
+        doc.fields.size()==3
+        doc.getFieldables("isbn").length==1
+        doc.getFieldables("isbn")[0]===field1
+        doc.getValues("isbn").length==1
+        doc.getValues("isbn")[0]==isbn
+        doc.getFieldables("contents").length==2
+        doc.getFieldables("contents")[0]==field2
+        doc.getFieldables("contents")[1]==field3
+        doc.getValues("contents").length==2
+        doc.getValues("contents")[0]==title
+        doc.getValues("contents")[1]==topic
     }
 }
