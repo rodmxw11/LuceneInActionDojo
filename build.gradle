@@ -34,6 +34,8 @@ test {
 }
 
 String index_folder = 'indexes/CH01-Index'
+String test_index_folder = 'indexes/test-Index'
+String test_data_folder = "src/test/resources/data"
 
 task indexer(type: JavaExec) {
     doFirst {
@@ -54,5 +56,18 @@ task searcher(type: JavaExec) {
     args = [
             index_folder, // indexDir
             'patent AND freedom'  // query
+    ]
+}
+
+task createTestIndex(type: JavaExec) {
+    doFirst {
+        delete test_index_folder
+        mkdir test_index_folder
+    }
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'org.example.utils.CreateTestIndex'
+    args = [
+            test_data_folder, // dataDir
+            test_index_folder, // indexDir
     ]
 }

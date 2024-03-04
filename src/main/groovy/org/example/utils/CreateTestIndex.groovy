@@ -69,12 +69,12 @@ class CreateTestIndex {
 
     static Document getDocument(File file) {
         Map<String, String> props = new Properties().with {
-            load(file)
+            load(file.newReader('UTF-8'))
             return it
         } as Map<String, String>
 
         // category comes from relative path below the base directory
-        String category = file.canonicalPath.replace('\\', '/').split("/data/")[1]
+        String category = file.canonicalPath.replace('\\', '/').split("/data/")[1]-"/${file.name}"
         props["category"] = category
 
         return getDocument(props)
@@ -143,11 +143,14 @@ class CreateTestIndex {
                     ->
                     if (bookFile.name.endsWith('.properties')) {
                         Document doc = getDocument(bookFile)
+                        w.addDocument(doc)
                     }
             } //endeach
+        } catch (Exception ee) {
+            ee.printStackTrace()
         } finally {
-            w?.close()
-            dir?.close
+            w.close()
+            dir.close()
         } //endfinally
     } //endmain
 }
