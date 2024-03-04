@@ -375,7 +375,7 @@ class TestCreateTestIndex extends Specification {
     static Map<String,String> test_geb_properties = [
             title:"G\u00F6del, Escher, Bach: an Eternal Golden Braid",
             isbn:"9780394756820",
-            author:"Douglas Hofstadter",
+            author:" Douglas Hofstadter,  Peter Jennings    ",
             pubmonth:"199905",
             subject:"artificial intelligence number theory mathematics music",
             url:"http://www.amazon.com/Godel-Escher-Bach-Eternal-Golden/dp/0394756827",
@@ -397,6 +397,7 @@ class TestCreateTestIndex extends Specification {
             doc.get("url") == url
             doc.get("subject") == subject
             doc.getValues("contents") as List == [title, subject, author, category]
+            doc.getValues("author") as List == ["Douglas Hofstadter","Peter Jennings"]
             ((NumericField)doc.getFieldable("pubmonth")).numericValue==Integer.parseInt(pubmonth)
             ((NumericField)doc.getFieldable("pubmonthAsDay")).numericValue==pubmonthAsDay
         }

@@ -88,37 +88,33 @@ class CreateTestIndex {
                 makeField(options, propName, props[propName])
         }
 
-        String category = props.category
+        def makeContentsField = {
+            String propsName
+            ->
+            makeField("contents",props[propsName],analyze:true,term:true)
+        }
 
-        String isbn = props.isbn
-        String title = props.title
-        String author = props.author
-        String url = props.url
-        String subject = props.subject
-
-        String pubmonth = props.pubmonth
-
-        println "$title\n$author\n$subject\n$pubmonth\n$category\n---------"
+        println "${props.title}\n${props.author}\n${props.subject}\n${props.pubmonth}\n${props.category}\n---------"
 
         use (DocumentCategory) {
-            Date pubDate = DateTools.stringToDate(pubmonth)
+            Date pubDate = DateTools.stringToDate(props.pubmonth)
             int pubmonthAsDay = pubDate.getTime()/(1000*3600*24)
             doc
                     << makePropField("isbn",store:true)
                     << makePropField("title",store:true,analyze:true,term:true)
-                    << makeField("title2",title.toLowerCase(),store:true,nonorm:true,term:true)
+                    << makeField("title2",props.title.toLowerCase(),store:true,nonorm:true,term:true)
                     << makePropField("url",store:true)
                     << makePropField("subject",store:true,analyze:true,term:true)
                     << makeIntField("pubmonth", props.pubmonth, store:true)
                     << makeIntField("pubmonthAsDay",pubmonthAsDay)
-                    << makeField("contents",title,analyze:true,term:true)
-                    << makeField("contents",subject,analyze:true,term:true)
-                    << makeField("contents",author,analyze:true,term:true)
-                    << makeField("contents",category,analyze:true,term:true)
+                    << makeContentsField("title")
+                    << makeContentsField("subject")
+                    << makeContentsField("author")
+                    << makeContentsField("category")
         }
 
         // split multiple authors into unique field instances
-        author.split(',').each {
+        props.author.split(',').each {
             String authorName
                 ->
                 doc.add(makeField("author",authorName.trim(),store:true,term:true))
