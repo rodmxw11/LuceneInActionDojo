@@ -100,9 +100,9 @@ class CreateTestIndex {
 
         println "$title\n$author\n$subject\n$pubmonth\n$category\n---------"
 
-        with (DocumentCategory) {
+        use (DocumentCategory) {
             Date pubDate = DateTools.stringToDate(pubmonth)
-            int pubmonthAsDay = d.getTime()/(1000*3600*24)
+            int pubmonthAsDay = pubDate.getTime()/(1000*3600*24)
             doc
                     << makePropField("isbn",store:true)
                     << makePropField("title",store:true,analyze:true,term:true)

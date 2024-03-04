@@ -1,7 +1,9 @@
 package org.example.utils
 
+import org.apache.lucene.document.DateTools
 import org.apache.lucene.document.Document
 import org.apache.lucene.document.NumericField
+import org.apache.tools.ant.util.DateUtils
 import spock.lang.Specification
 import org.apache.lucene.document.Field
 import static org.apache.lucene.document.Field.Store.*
@@ -368,5 +370,35 @@ class TestCreateTestIndex extends Specification {
         doc.getValues("contents").length==2
         doc.getValues("contents")[0]==title
         doc.getValues("contents")[1]==topic
+    }
+
+    static Map<String,String> test_geb_properties = [
+            title:"G\u00F6del, Escher, Bach: an Eternal Golden Braid",
+            isbn:"9780394756820",
+            author:"Douglas Hofstadter",
+            pubmonth:"199905",
+            subject:"artificial intelligence number theory mathematics music",
+            url:"http://www.amazon.com/Godel-Escher-Bach-Eternal-Golden/dp/0394756827",
+            category:"technology.computers/ai",
+    ]
+
+    def "Test getDocument(Map)"() {
+        given:
+        Document doc = getDocument(test_geb_properties)
+        Date pubDate = DateTools.stringToDate(test_geb_properties.pubmonth)
+        int pubmonthAsDay = pubDate.getTime()/(1000*3600*24)
+
+        expect:
+        doc != null
+        with(test_geb_properties) {
+            doc.get("isbn") == isbn
+            doc.get("title") == title
+            doc.get("title2") == title.toLowerCase()
+            doc.get("url") == url
+            doc.get("subject") == subject
+            doc.getValues("contents") as List == [title, subject, author, category]
+            ((NumericField)doc.getFieldable("pubmonth")).numericValue==Integer.parseInt(pubmonth)
+            ((NumericField)doc.getFieldable("pubmonthAsDay")).numericValue==pubmonthAsDay
+        }
     }
 }
